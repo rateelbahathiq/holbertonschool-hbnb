@@ -15,5 +15,5 @@ The project follows a layered architecture pattern:
 
 1. **Clone the repository** (if not already done):
    ```bash
-   git clone <repository_url>
+   git clone [https://github.com/oways-work/holbertonschool-hbnb](https://github.com/oways-work/holbertonschool-hbnb)
    cd holbertonschool-hbnb/part2
