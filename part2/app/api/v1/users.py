@@ -19,8 +19,8 @@ user_output_model = api.model('UserOutput', {
     'last_name': fields.String(description='Last Name'),
     'email': fields.String(description='Email'),
     'is_admin': fields.Boolean(description='Admin status')
-    # Note: password is intentionally removed here!
 })
+
 
 @api.route('/')
 class UserList(Resource):
@@ -29,12 +29,12 @@ class UserList(Resource):
     def post(self):
         """Create a new user"""
         user_data = api.payload
-        
+
         # Check if email already exists
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
-            
+
         new_user = facade.create_user(user_data)
         return new_user, 201
 
@@ -42,6 +42,7 @@ class UserList(Resource):
     def get(self):
         """Retrieve a list of all users"""
         return facade.user_repo.get_all()
+
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -61,7 +62,7 @@ class UserResource(Resource):
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
-            
-        # Update user logic (in a real app, we might handle password hashing here)
+
+        # Update user logic (in real app, handle password hashing)
         user.update(user_data)
         return user

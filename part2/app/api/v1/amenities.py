@@ -7,8 +7,10 @@ api = Namespace('amenities', description='Amenity operations')
 amenity_model = api.model('Amenity', {
     'id': fields.String(readonly=True, description='Amenity unique identifier'),
     'name': fields.String(required=True, description='Name of the amenity'),
-    'description': fields.String(required=False, description='Description of the amenity')
+    'description': fields.String(required=False,
+                                 description='Description of the amenity')
 })
+
 
 @api.route('/')
 class AmenityList(Resource):
@@ -24,6 +26,7 @@ class AmenityList(Resource):
     def get(self):
         """Retrieve all amenities"""
         return facade.get_all_amenities()
+
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):

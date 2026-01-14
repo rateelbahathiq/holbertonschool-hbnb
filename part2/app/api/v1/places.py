@@ -25,8 +25,10 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'amenity_ids': fields.List(fields.String, required=False, description="List of amenity IDs")
+    'amenity_ids': fields.List(fields.String, required=False,
+                               description="List of amenity IDs")
 })
+
 
 @api.route('/')
 class PlaceList(Resource):
@@ -35,34 +37,35 @@ class PlaceList(Resource):
     def post(self):
         """Create a new place"""
         place_data = api.payload
-        
+
         # 1. Validate owner exists
         user = facade.get_user(place_data['owner_id'])
         if not user:
             return {'error': 'Owner not found'}, 400
-            
+
         # 2. Validate price
         if place_data['price'] < 0:
             return {'error': 'Price must be non-negative'}, 400
-        
+
         # 3. Extract amenity_ids from the data so they don't cause a crash
         amenity_ids = place_data.pop('amenity_ids', [])
-            
+
         # 4. Create the place
         new_place = facade.create_place(place_data)
-        
+
         # 5. Link the amenities to the new place
         for amenity_id in amenity_ids:
             amenity = facade.get_amenity(amenity_id)
             if amenity:
                 new_place.add_amenity(amenity)
-                     
+
         return new_place, 201
 
     @api.marshal_list_with(place_model)
     def get(self):
         """Retrieve all places"""
         return facade.get_all_places()
+
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
@@ -82,10 +85,11 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
-        
+
         # Example validation for update
-        if 'owner_id' in place_data and place_data['owner_id'] != place.owner_id:
-             return {'error': 'Cannot change the owner of a place'}, 400
-             
+        if 'owner_id' in place_data and \
+           place_data['owner_id'] != place.owner_id:
+            return {'error': 'Cannot change the owner of a place'}, 400
+
         place.update(place_data)
         return place

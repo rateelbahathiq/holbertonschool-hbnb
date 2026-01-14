@@ -7,10 +7,12 @@ api = Namespace('reviews', description='Review operations')
 review_model = api.model('Review', {
     'id': fields.String(readonly=True, description='Review unique identifier'),
     'text': fields.String(required=True, description='Text of the review'),
-    'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
+    'rating': fields.Integer(required=True,
+                             description='Rating of the place (1-5)'),
     'user_id': fields.String(required=True, description='ID of the user'),
     'place_id': fields.String(required=True, description='ID of the place')
 })
+
 
 @api.route('/')
 class ReviewList(Resource):
@@ -19,32 +21,33 @@ class ReviewList(Resource):
     def post(self):
         """Create a new review"""
         review_data = api.payload
-        
+
         # 1. Validate User exists
         user = facade.get_user(review_data['user_id'])
         if not user:
             return {'error': 'User not found'}, 400
-            
+
         # 2. Validate Place exists
         place = facade.get_place(review_data['place_id'])
         if not place:
-            return {'error': 'Place not found'}, 400
-            
+            return {'error': 'Place not found'}, 404
+
         # 3. Validate Rating
         if not (1 <= review_data['rating'] <= 5):
-             return {'error': 'Rating must be between 1 and 5'}, 400
+            return {'error': 'Rating must be between 1 and 5'}, 400
 
         new_review = facade.create_review(review_data)
-        
+
         # Link review to place
         place.add_review(new_review)
-        
+
         return new_review, 201
 
     @api.marshal_list_with(review_model)
     def get(self):
         """Retrieve all reviews"""
         return facade.get_all_reviews()
+
 
 @api.route('/<review_id>')
 class ReviewResource(Resource):
@@ -64,7 +67,7 @@ class ReviewResource(Resource):
         review = facade.get_review(review_id)
         if not review:
             return {'error': 'Review not found'}, 404
-            
+
         review.update(review_data)
         return review
 
@@ -73,9 +76,10 @@ class ReviewResource(Resource):
         review = facade.get_review(review_id)
         if not review:
             return {'error': 'Review not found'}, 404
-            
+
         facade.delete_review(review_id)
         return {'message': 'Review deleted successfully'}, 200
+
 
 @api.route('/places/<place_id>/reviews')
 class PlaceReviewList(Resource):
@@ -85,6 +89,6 @@ class PlaceReviewList(Resource):
         # Validate place exists
         place = facade.get_place(place_id)
         if not place:
-             return {'error': 'Place not found'}, 404
-             
+            return {'error': 'Place not found'}, 404
+
         return facade.get_reviews_by_place(place_id)
