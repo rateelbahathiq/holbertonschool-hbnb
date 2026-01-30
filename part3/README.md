@@ -1,19 +1,15 @@
-# HBnB Evolution - Part 2: Business Logic & API
+# HBnB Evolution – Part 3: Security & Configuration
 
-This project is the second phase of the **HBnB Evolution** application. It implements the core Business Logic and a RESTful API using Flask and Flask-RESTx.
+This project is the third phase of the **HBnB Evolution** application.  
+In this phase, the application is extended with **secure password handling**, **application configuration**, and preparation for **JWT-based authentication**, while maintaining a clean, layered architecture.
+
 
 ## 📂 Project Structure
 
-The project follows a layered architecture pattern:
-
-- **app/models/**: Business Logic Layer (User, Place, Review, Amenity entities).
-- **app/persistence/**: Persistence Layer (In-memory repository for storage).
-- **app/services/**: Service Layer (Facade pattern to manage logic between API and persistence).
-- **app/api/v1/**: Presentation Layer (API endpoints).
 
 ## 🚀 Setup & Installation
 
 1. **Clone the repository**:
    ```bash
    git clone [https://github.com/oways-work/holbertonschool-hbnb](https://github.com/oways-work/holbertonschool-hbnb)
-   cd holbertonschool-hbnb/part2
+   cd holbertonschool-hbnb/part3
