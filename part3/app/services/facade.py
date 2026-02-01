@@ -1,97 +1,105 @@
-from app.persistence.repository import SQLAlchemyRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+from app.models.state import State
+from app.models.city import City
+from app.extensions import db
 
 class HBnBFacade:
-    def __init__(self):
-        self.user_repo = SQLAlchemyRepository(User)
-        self.place_repo = SQLAlchemyRepository(Place)
-        self.review_repo = SQLAlchemyRepository(Review)
-        self.amenity_repo = SQLAlchemyRepository(Amenity)
-
-    # --- User Methods ---
-    def create_user(self, user_data):
-        user = User(**user_data)
-        self.user_repo.add(user)
-        return user
-
     def get_user(self, user_id):
-        return self.user_repo.get(user_id)
+        return User.query.get(user_id)
 
     def get_user_by_email(self, email):
-        # FIX: Query by '_email' (the DB column), not 'email' (the property)
-        return self.user_repo.get_by_attribute('_email', email)
+        return User.query.filter_by(email=email).first()
 
-    # --- Place Methods ---
-    def create_place(self, place_data):
-        place = Place(**place_data)
-        self.place_repo.add(place)
-        return place
+    def create_user(self, user_data):
+        user = User(**user_data)
+        user.hash_password(user_data['password'])
+        db.session.add(user)
+        db.session.commit()
+        return user
 
     def get_place(self, place_id):
-        return self.place_repo.get(place_id)
+        return Place.query.get(place_id)
+
+    def create_place(self, place_data):
+        place = Place(**place_data)
+        db.session.add(place)
+        db.session.commit()
+        return place
 
     def get_all_places(self):
-        return self.place_repo.get_all()
+        return Place.query.all()
 
     def update_place(self, place_id, place_data):
-        return self.place_repo.update(place_id, place_data)
+        place = Place.query.get(place_id)
+        if not place:
+            return None
+        for key, value in place_data.items():
+            if key != 'id':
+                setattr(place, key, value)
+        db.session.commit()
+        return place
 
-    # --- Review Methods ---
+    def get_amenity(self, amenity_id):
+        return Amenity.query.get(amenity_id)
+
+    def get_all_amenities(self):
+        return Amenity.query.all()
+
+    def create_amenity(self, amenity_data):
+        amenity = Amenity(**amenity_data)
+        db.session.add(amenity)
+        db.session.commit()
+        return amenity
+
+    def update_amenity(self, amenity_id, amenity_data):
+        amenity = Amenity.query.get(amenity_id)
+        if not amenity:
+            return None
+        if 'name' in amenity_data:
+            amenity.name = amenity_data['name']
+        db.session.commit()
+        return amenity
+    
+    def add_amenity_to_place(self, place_id, amenity_id):
+        place = Place.query.get(place_id)
+        amenity = Amenity.query.get(amenity_id)
+        if place and amenity:
+            place.add_amenity(amenity)
+            db.session.commit()
+
     def create_review(self, review_data):
         review = Review(**review_data)
-        self.review_repo.add(review)
+        db.session.add(review)
+        db.session.commit()
         return review
 
     def get_review(self, review_id):
-        return self.review_repo.get(review_id)
+        return Review.query.get(review_id)
 
     def get_all_reviews(self):
-        return self.review_repo.get_all()
+        return Review.query.all()
 
     def get_reviews_by_place(self, place_id):
-        place = self.get_place(place_id)
-        return place.reviews if place else []
+        place = Place.query.get(place_id)
+        if not place:
+            return []
+        return place.reviews
 
     def update_review(self, review_id, review_data):
-        return self.review_repo.update(review_id, review_data)
+        review = Review.query.get(review_id)
+        if not review:
+            return None
+        for key, value in review_data.items():
+            if key != 'id':
+                setattr(review, key, value)
+        db.session.commit()
+        return review
 
     def delete_review(self, review_id):
-        return self.review_repo.delete(review_id)
-
-    # --- Amenity Methods ---
-    def create_amenity(self, amenity_data):
-        amenity = Amenity(**amenity_data)
-        self.amenity_repo.add(amenity)
-        return amenity
-
-    def get_amenity(self, amenity_id):
-        return self.amenity_repo.get(amenity_id)
-
-    def get_all_amenities(self):
-        return self.amenity_repo.get_all()
-
-    def update_amenity(self, amenity_id, amenity_data):
-        return self.amenity_repo.update(amenity_id, amenity_data)
-
-    # --- Relationship Methods ---
-    def add_amenity_to_place(self, place_id, amenity_id):
-        place = self.place_repo.get(place_id)
-        amenity = self.amenity_repo.get(amenity_id)
-        if place and amenity:
-            place.add_amenity(amenity)
-            # SQLAlchemy automatically handles the join table update when we commit
-            # We need to explicitly commit the change via the repo
-            self.place_repo.update(place_id, {}) # specific trick to force commit
-            return place
-        return None
-
-    def get_amenities_by_place(self, place_id):
-        place = self.place_repo.get(place_id)
-        return place.amenities if place else []
-
-    def get_places_by_amenity(self, amenity_id):
-        amenity = self.amenity_repo.get(amenity_id)
-        return amenity.places if amenity else []
+        review = Review.query.get(review_id)
+        if review:
+            db.session.delete(review)
+            db.session.commit()

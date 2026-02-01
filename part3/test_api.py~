@@ -1,0 +1,75 @@
+import unittest
+import requests
+
+BASE_URL = "http://127.0.0.1:5000/api/v1"
+
+class TestHBnBAPI(unittest.TestCase):
+
+    def test_full_flow(self):
+        # 1. Create User
+        print("Testing Create User...")
+        user_payload = {
+            "first_name": "Test",
+            "last_name": "User",
+            "email": "test_auto@example.com",
+            "password": "password123"
+        }
+        response = requests.post(f"{BASE_URL}/users/", json=user_payload)
+        self.assertEqual(response.status_code, 201)
+        user_id = response.json()['id']
+        print(f"User created: {user_id}")
+
+        # 2. Create Amenity
+        print("Testing Create Amenity...")
+        amenity_payload = {"name": "Pool"}
+        response = requests.post(f"{BASE_URL}/amenities/", json=amenity_payload)
+        self.assertEqual(response.status_code, 201)
+        amenity_id = response.json()['id']
+        print(f"Amenity created: {amenity_id}")
+
+        # 3. Create Place
+        print("Testing Create Place...")
+        place_payload = {
+            "title": "Test Loft",
+            "price": 150.0,
+            "latitude": 40.71,
+            "longitude": -74.00,
+            "owner_id": user_id,
+            "amenity_ids": [amenity_id]
+        }
+        response = requests.post(f"{BASE_URL}/places/", json=place_payload)
+        self.assertEqual(response.status_code, 201)
+        place_id = response.json()['id']
+        print(f"Place created: {place_id}")
+
+        # 4. Create Review
+        print("Testing Create Review...")
+        review_payload = {
+            "text": "Great place!",
+            "rating": 5,
+            "user_id": user_id,
+            "place_id": place_id
+        }
+        response = requests.post(f"{BASE_URL}/reviews/", json=review_payload)
+        self.assertEqual(response.status_code, 201)
+        review_id = response.json()['id']
+        print(f"Review created: {review_id}")
+
+        # 5. Verify Review exists
+        print("Testing Get Review...")
+        response = requests.get(f"{BASE_URL}/reviews/{review_id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['text'], "Great place!")
+
+        # 6. Delete Review
+        print("Testing Delete Review...")
+        response = requests.delete(f"{BASE_URL}/reviews/{review_id}")
+        self.assertEqual(response.status_code, 200)
+        
+        # Verify Deletion
+        response = requests.get(f"{BASE_URL}/reviews/{review_id}")
+        self.assertEqual(response.status_code, 404)
+        print("Review deleted successfully.")
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,4 +1,5 @@
 from app.models.base import BaseModel
+<<<<<<< HEAD
 from app.extensions import db
 from flask_bcrypt import generate_password_hash, check_password_hash
 
@@ -21,10 +22,17 @@ class User(BaseModel):
     def __init__(self, first_name, last_name, email, password, is_admin=False):
         # We don't call super().__init__() because db.Model doesn't need it.
         # We set attributes directly to trigger the @property setters below.
+=======
+
+class User(BaseModel):
+    def __init__(self, first_name, last_name, email, is_admin=False):
+        super().__init__()
+>>>>>>> 52e00562050634211fed8dceba1bc0a709fb72e8
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+<<<<<<< HEAD
         self.password_hash = generate_password_hash(password).decode('utf8')
 
     @property
@@ -66,3 +74,7 @@ class User(BaseModel):
     def verify_password(self, password):
         """Verifies the input password against the stored hash."""
         return check_password_hash(self.password_hash, password)
+=======
+        self.places = []  # List to store relationship with Place objects
+        self.reviews = []  # List to store relationship with Review objects
+>>>>>>> 52e00562050634211fed8dceba1bc0a709fb72e8

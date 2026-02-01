@@ -3,6 +3,7 @@ from app.services import facade
 
 api = Namespace('users', description='User operations')
 
+<<<<<<< HEAD
 # Define the user model for input
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First Name'),
@@ -50,3 +51,6 @@ class UserResource(Resource):
         if not user:
             api.abort(404, "User not found")
         return user
+=======
+# Placeholder for User Endpoints (We will implement this in Task 2)
+>>>>>>> 52e00562050634211fed8dceba1bc0a709fb72e8

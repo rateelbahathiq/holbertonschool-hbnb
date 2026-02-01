@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # HBnB - Part 3: Database & Relationships
 
 This project is the **third phase** of the HBnB (Holberton BnB) application. In this phase, we have transitioned from simple file-based storage to a robust **SQL Database** using SQLAlchemy. We have also implemented complex database relationships (One-to-Many, Many-to-Many) and secured the API with JWT Authentication.
@@ -30,3 +31,20 @@ Ensure you have Python 3.8+ installed.
 ```bash
 git clone [https://github.com/yourusername/holbertonschool-hbnb.git](https://github.com/yourusername/holbertonschool-hbnb.git)
 cd holbertonschool-hbnb
+=======
+# HBnB Evolution – Part 3: Security & Configuration
+
+This project is the third phase of the **HBnB Evolution** application.  
+In this phase, the application is extended with **secure password handling**, **application configuration**, and preparation for **JWT-based authentication**, while maintaining a clean, layered architecture.
+
+
+## 📂 Project Structure
+
+
+## 🚀 Setup & Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone [https://github.com/oways-work/holbertonschool-hbnb](https://github.com/oways-work/holbertonschool-hbnb)
+   cd holbertonschool-hbnb/part3
+>>>>>>> 52e00562050634211fed8dceba1bc0a709fb72e8
