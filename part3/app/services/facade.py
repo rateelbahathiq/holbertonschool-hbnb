@@ -2,8 +2,6 @@ from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
-from app.models.state import State
-from app.models.city import City
 from app.extensions import db
 
 class HBnBFacade:

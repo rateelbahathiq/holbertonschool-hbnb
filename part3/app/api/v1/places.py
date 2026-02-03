@@ -29,7 +29,6 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'city_id': fields.String(required=True, description='ID of the city'),
     'amenities': fields.List(fields.String, description="List of amenity IDs")
 })
 
@@ -41,7 +40,6 @@ place_output_model = api.model('PlaceOutput', {
     'latitude': fields.Float(description='Latitude of the place'),
     'longitude': fields.Float(description='Longitude of the place'),
     'owner_id': fields.String(description='ID of the owner'),
-    'city_id': fields.String(description='ID of the city'),
     'created_at': fields.DateTime(description='Creation timestamp'),
     'updated_at': fields.DateTime(description='Update timestamp'),
     'owner': fields.Nested(user_model, description='Owner details'),

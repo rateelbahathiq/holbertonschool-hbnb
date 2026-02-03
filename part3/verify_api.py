@@ -23,7 +23,7 @@ def run_test():
     user_id = user_res.json()['id']
     print(f"✅ Admin User Created: {user_id}")
 
-    # 2. LOGIN (Get the Token!)
+    # 2. LOGIN
     print("🔹 Logging in to get Token...")
     auth_res = requests.post(f"{BASE_URL}/auth/login", json={
         "email": unique_email, 
@@ -49,29 +49,35 @@ def run_test():
     amenity_id = amenity_res.json()['id']
     print(f"✅ Amenity Created: {amenity_id}")
 
-    # 4. Create STATE and CITY (New Requirement)
-    # We must do this directly via DB or add API endpoints. 
-    # For Part 3 verification without API endpoints for State/City, we rely on the Facade/Models being present.
-    # HOWEVER, since we don't have API endpoints for State/City yet, we will rely on creating them manually in the script 
-    # OR we assume the API doesn't enforce FK checks if we were mocking. 
-    # BUT we are using SQLAlchmey, so FKs are enforced.
+    # 4. Create a Place WITH the Amenity
+    print("🔹 Creating Place with Amenity...")
+    place_payload = {
+        "title": "Smart House",
+        "description": "Has great WiFi",
+        "price": 150.0,
+        "latitude": 12.34,
+        "longitude": 56.78,
+        "owner_id": user_id,
+        "amenities": [amenity_id]
+    }
     
-    # NOTE: Since we haven't built API endpoints for State/City in this turn, 
-    # we cannot create them via requests. 
-    # To fix this for the Verify script, we will insert dummy data using Python directly if possible,
-    # OR we simply fail gracefully here.
+    place_res = requests.post(f"{BASE_URL}/places/", json=place_payload, headers=headers)
     
-    # As a workaround for this specific verify script to PASS, we will assume 
-    # the user will implement State/City APIs later, or we just verify the Models exist.
-    # To make this script run, we need a valid city_id.
+    if place_res.status_code != 201:
+        print(f"❌ Failed to create place: {place_res.text}")
+        return
+
+    place_data = place_res.json()
+    print(f"✅ Place Created: {place_data['id']}")
+
+    # 5. Verify the Link
+    print("🔹 Verifying Link...")
+    linked_amenities = place_data.get('amenities', [])
     
-    # Since we can't create a city via API, we will skip Place creation verification 
-    # or we need to add the API endpoints for State/City. 
-    # FOR NOW: We will stop here and say "Basic Auth & Amenities OK".
-    
-    print("⚠️  To create a Place, we now need a valid City ID.")
-    print("⚠️  Please implement POST /states and POST /cities to fully verify Place creation.")
-    print("🎉 Auth and Amenities are working correctly!")
+    if linked_amenities and linked_amenities[0]['id'] == amenity_id:
+        print(f"🎉 SUCCESS! Place has amenity: {linked_amenities[0]['name']}")
+    else:
+        print(f"❌ FAILED. Amenities list: {linked_amenities}")
 
 if __name__ == "__main__":
     try:

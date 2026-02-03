@@ -1,31 +1,26 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import create_access_token
 from app.services import facade
+from flask_jwt_extended import create_access_token
 
 api = Namespace('auth', description='Authentication operations')
 
-auth_model = api.model('Auth', {
+login_model = api.model('Login', {
     'email': fields.String(required=True, description='User email'),
     'password': fields.String(required=True, description='User password')
 })
 
 @api.route('/login')
 class Login(Resource):
-    @api.expect(auth_model)
+    @api.expect(login_model)
     def post(self):
-        """Login a user and return a JWT token"""
+        """Login user"""
         data = api.payload
         email = data.get('email')
         password = data.get('password')
 
-        # 1. Find user by email
         user = facade.get_user_by_email(email)
+        if user and user.check_password(password):
+            access_token = create_access_token(identity=user.id)
+            return {'access_token': access_token}, 200
         
-        # 2. Verify password
-        if not user or not user.verify_password(password):
-            return {'error': 'Invalid credentials'}, 401
-
-        # 3. Generate Token (Add claims like is_admin)
-        access_token = create_access_token(identity=user.id, additional_claims={'is_admin': user.is_admin})
-
-        return {'access_token': access_token}, 200
+        return {'message': 'Invalid credentials'}, 401
