@@ -1,3 +1,18 @@
-venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Editor backups
+*~
+*.swp
+.vscode/
+.idea/
+
+# Database
+instance/
+*.db
+*.sqlite3

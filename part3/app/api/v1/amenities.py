@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt
 from app.services import facade
 
 api = Namespace('amenities', description='Amenity operations')
@@ -13,8 +14,14 @@ class AmenityList(Resource):
     @api.doc('create_amenity')
     @api.expect(amenity_model)
     @api.marshal_with(amenity_model, code=201)
+    @jwt_required()
     def post(self):
         """Create a new amenity"""
+        claims = get_jwt()
+        # Logic: Only Admin can create amenities
+        if not claims.get('is_admin'):
+            return {'message': 'Admin privileges required'}, 403
+
         amenity = facade.create_amenity(api.payload)
         return amenity, 201
 
@@ -38,8 +45,14 @@ class AmenityResource(Resource):
     @api.doc('update_amenity')
     @api.expect(amenity_model)
     @api.marshal_with(amenity_model)
+    @jwt_required()
     def put(self, amenity_id):
         """Update an amenity"""
+        claims = get_jwt()
+        # Logic: Only Admin can update amenities
+        if not claims.get('is_admin'):
+            return {'message': 'Admin privileges required'}, 403
+
         amenity = facade.update_amenity(amenity_id, api.payload)
         if not amenity:
             api.abort(404, "Amenity not found")

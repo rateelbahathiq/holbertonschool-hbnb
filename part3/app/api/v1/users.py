@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 api = Namespace('users', description='User operations')
@@ -26,18 +27,11 @@ class UserList(Resource):
     @api.marshal_with(user_model, code=201)
     def post(self):
         """Create a new user"""
-        user = facade.create_user(api.payload)
+        user_data = api.payload
+        if facade.get_user_by_email(user_data['email']):
+            return {'message': 'Email already registered'}, 400
+        user = facade.create_user(user_data)
         return user, 201
-
-    @api.doc('list_users')
-    @api.marshal_list_with(user_model)
-    def get(self):
-        """List all users"""
-        return facade.get_user_by_email(None) # Facade usually handles "all" differently, but standard facade doesn't have get_all_users exposed typically. 
-        # Actually, let's strictly follow the Facade interface usually expected.
-        # If get_all_users isn't in your facade, you might need to add it or use a different method.
-        # However, typically getting by ID is the main requirement.
-        pass 
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -53,10 +47,24 @@ class UserResource(Resource):
     @api.doc('update_user')
     @api.expect(user_create_model)
     @api.marshal_with(user_model)
+    @jwt_required()
     def put(self, user_id):
         """Update a user"""
-        user = facade.get_user(user_id)
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        # Logic: User can only update themselves. Admins can update anyone.
+        if current_user_id != user_id and not is_admin:
+            return {'message': 'Unauthorized action'}, 403
+
+        # Logic: Non-admins cannot update email or password
+        user_data = api.payload
+        if not is_admin:
+            if 'email' in user_data or 'password' in user_data:
+                return {'message': 'You cannot modify email or password'}, 400
+
+        user = facade.update_user(user_id, user_data)
         if not user:
             api.abort(404, "User not found")
-        # Logic to update user would go here
         return user
