@@ -61,8 +61,5 @@ The application uses JWT tokens stored in cookies to maintain user sessions.
 - Header/footer styling
 - Image assets included locally
 
----
-
-## 📂 Project Structure
 
 
