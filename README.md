@@ -25,12 +25,26 @@ This repository contains the progressive development of the **HBnB Evolution** p
   - **Complex Relationships**: Implemented One-to-Many and Many-to-Many relationships (e.g., Places ↔ Amenities).
 - **How to Run:** Navigate to the `part3` directory and follow the [Part 3 README](./part3/README.md).
 
+### [Part 4: Simple Web Client](./part4/)
+- **Focus:** Building a dynamic frontend interface connected to the backend API.
+- **Key Features:**
+    - HTML/CSS frontend interface
+    - JavaScript AJAX communication with API
+    - JWT session handling via cookies
+    - Dynamic places listing
+    - Client-side price filtering
+    - Place details rendering
+    - Reviews displayed as cards
+    - Add review form for authenticated users
+- **How to Run:** Navigate to the `part4` directory and follow the [Part 4 README](./part4/README.md).
+
 ## 🛠 Technologies
 - **Language:** Python 3.x
 - **Framework:** Flask, Flask-RESTx, Flask-SQLAlchemy, Flask-JWT-Extended
+- **Frontend:** HTML5, CSS3, JavaScript
 - **Tools:** Git, Swagger UI, cURL, SQLite
 
 ## Authors
 * **OWAYS Abdulhakim Aljbreen**
-* **Bahathiq Mohammed Rateel**
+* **Rateel Mohammed Bahathek**
 * **Raghad Abdullah Nassef**
