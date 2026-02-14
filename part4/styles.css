@@ -1,0 +1,170 @@
+.logo {
+    height: 40px;
+}
+
+header,
+footer {
+    background-color:#d65a5a;
+    color: white;
+}
+
+
+header {
+    
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer {
+    
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+header a {
+    color: #ffffff;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+header img {
+    filter: brightness(1.6);
+
+}
+
+
+
+.page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+
+.page-container img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+
+.amenities-box {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 30px auto;
+    background: #fafafa;
+}
+
+
+.amenities-box ul {
+    list-style: disc;
+    text-align: left;
+    display: inline-block;
+    margin: 0 auto;
+    padding-left: 20px;
+}
+
+
+
+
+.review-card {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px ;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.review-card h4 {
+    margin: 0 0 8px 0;
+}
+
+.review-card p {
+    margin: 6px 0;
+}
+
+.review-card .rating {
+    font-weight: bold;
+    color: #444;
+}
+
+header nav a {
+    margin-left: 15px;
+}
+
+
+.place-card {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+}
+
+.details-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.details-button:hover {
+    background-color: #0056b3;
+}
+
+.form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 10px;
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+
+.form-group input,
+textarea,
+select,
+button {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+
+
+button {
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
